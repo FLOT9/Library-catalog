@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 
-
 app = FastAPI(
     title="Library Catalog API",
     description="REST API для управления библиотечным каталогом",

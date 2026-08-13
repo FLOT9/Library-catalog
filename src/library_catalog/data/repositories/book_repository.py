@@ -47,12 +47,12 @@ class BookRepository(BaseRepository[Book]):
         return list(result.scalars().all())
 
     async def count_by_filters(
-            self,
-            title: str | None = None,
-            author: str | None = None,
-            genre: str | None = None,
-            year: int | None = None,
-            available: bool | None = None,
+        self,
+        title: str | None = None,
+        author: str | None = None,
+        genre: str | None = None,
+        year: int | None = None,
+        available: bool | None = None,
     ) -> int:
         statement = select(func.count()).select_from(Book)
 

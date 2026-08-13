@@ -43,6 +43,7 @@ class BookUpdate(BaseModel):
     isbn: str | None = Field(None, min_length=1, max_length=20)
     description: str | None = Field(None, max_length=5000)
 
+
 class ShowBook(BookBase):
     available: bool
     created_at: datetime
@@ -53,6 +54,7 @@ class ShowBook(BookBase):
     book_id: UUID
 
     model_config = ConfigDict(from_attributes=True)
+
 
 class BookFilters(BaseModel):
     title: str | None = None
