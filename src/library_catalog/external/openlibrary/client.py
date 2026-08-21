@@ -5,6 +5,7 @@ from ...domain.exceptions import (
     OpenLibraryTimeoutException,
 )
 from ..base.base_client import BaseApiClient
+from .schemas import OpenLibrarySearchResponse
 
 
 class OpenLibraryClient(BaseApiClient):
@@ -53,11 +54,12 @@ class OpenLibraryClient(BaseApiClient):
                 params={"isbn": isbn, "limit": 1},
             )
 
-            docs = data.get("docs", [])
-            if not docs:
+            response = OpenLibrarySearchResponse.model_validate(data)
+
+            if not response.docs:
                 return {}
 
-            return self._extract_book_data(docs[0])
+            return self._extract_book_data(response.docs[0].model_dump())
 
 
         except httpx.TimeoutException:
@@ -77,11 +79,12 @@ class OpenLibraryClient(BaseApiClient):
                 },
             )
 
-            docs = data.get("docs", [])
-            if not docs:
+            response = OpenLibrarySearchResponse.model_validate(data)
+
+            if not response.docs:
                 return {}
 
-            return self._extract_book_data(docs[0])
+            return self._extract_book_data(response.docs[0].model_dump())
 
         except httpx.TimeoutException:
             raise OpenLibraryTimeoutException(self.timeout)
