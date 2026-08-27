@@ -46,7 +46,6 @@ class OpenLibraryClient(BaseApiClient):
 
         return result
 
-
     async def search_by_isbn(self, isbn: str) -> dict:
         try:
             data = await self._get(
@@ -61,12 +60,10 @@ class OpenLibraryClient(BaseApiClient):
 
             return self._extract_book_data(response.docs[0].model_dump())
 
-
         except httpx.TimeoutException:
             raise OpenLibraryTimeoutException(self.timeout)
         except httpx.HTTPError as error:
             raise OpenLibraryException(str(error))
-
 
     async def search_by_title_author(self, title: str, author: str) -> dict:
         try:
@@ -92,10 +89,10 @@ class OpenLibraryClient(BaseApiClient):
             raise OpenLibraryException(str(error))
 
     async def enrich(
-            self,
-            title: str,
-            author: str,
-            isbn: str | None = None,
+        self,
+        title: str,
+        author: str,
+        isbn: str | None = None,
     ) -> dict:
         if isbn:
             data = await self.search_by_isbn(isbn)

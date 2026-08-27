@@ -24,7 +24,7 @@ async def get_book_service(
 
 @lru_cache
 def get_openlibrary_client() -> OpenLibraryClient:
-    base_url=settings.openlibrary_base_url
+    base_url = settings.openlibrary_base_url
     timeout = settings.openlibrary_timeout
 
     return OpenLibraryClient(base_url=base_url, timeout=timeout)

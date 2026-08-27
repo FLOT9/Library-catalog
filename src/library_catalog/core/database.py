@@ -44,5 +44,6 @@ async def check_db_connection() -> bool:
         await conn.execute(text("SELECT 1"))
         return True
 
+
 async def dispose_engine() -> None:
     await engine.dispose()

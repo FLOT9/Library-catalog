@@ -7,11 +7,11 @@ import httpx
 
 class BaseApiClient(ABC):
     def __init__(
-            self,
-            base_url: str,
-            timeout: float = 10.0,
-            retries: int = 3,
-            backoff: float = 0.5,
+        self,
+        base_url: str,
+        timeout: float = 10.0,
+        retries: int = 3,
+        backoff: float = 0.5,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
@@ -21,8 +21,7 @@ class BaseApiClient(ABC):
         self.logger = logging.getLogger(self.client_name())
 
     @abstractmethod
-    def client_name(self) -> str:
-        ...
+    def client_name(self) -> str: ...
 
     def _build_url(self, path: str) -> str:
         if not path.startswith("/"):
@@ -34,10 +33,10 @@ class BaseApiClient(ABC):
         await self._client.aclose()
 
     async def _request(
-            self,
-            method: str,
-            path: str,
-            params: dict | None = None,
+        self,
+        method: str,
+        path: str,
+        params: dict | None = None,
     ) -> dict:
         url = self._build_url(path)
 
@@ -50,18 +49,14 @@ class BaseApiClient(ABC):
                     attempt + 1,
                 )
 
-                response = await self._client.request(
-                    method,
-                    url,
-                    params=params
-                )
+                response = await self._client.request(method, url, params=params)
                 response.raise_for_status()
                 return response.json()
 
             except httpx.TimeoutException:
                 if attempt == self.retries - 1:
                     raise
-                wait_time = self.backoff * (2 **attempt)
+                wait_time = self.backoff * (2**attempt)
                 self.logger.warning(
                     "Request failed, retrying in %s seconds",
                     wait_time,
@@ -72,7 +67,7 @@ class BaseApiClient(ABC):
                 if attempt == self.retries - 1:
                     raise
 
-                wait_time = self.backoff * (2 ** attempt)
+                wait_time = self.backoff * (2**attempt)
                 self.logger.warning(
                     "Network error, retrying in %s seconds",
                     wait_time,
@@ -82,7 +77,7 @@ class BaseApiClient(ABC):
             except httpx.HTTPStatusError as error:
                 status_code = error.response.status_code
                 if status_code >= 500 and attempt < self.retries - 1:
-                    wait_time = self.backoff * (2 ** attempt)
+                    wait_time = self.backoff * (2**attempt)
                     self.logger.warning(
                         "Request failed, retrying in %s seconds",
                         wait_time,
@@ -94,11 +89,8 @@ class BaseApiClient(ABC):
         raise RuntimeError("Request was not attempted because retries is 0")
 
     async def _get(
-            self,
-            path: str,
-            **kwargs,
+        self,
+        path: str,
+        **kwargs,
     ) -> dict:
         return await self._request("GET", path, **kwargs)
-
-
-

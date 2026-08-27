@@ -37,6 +37,7 @@ async def test_get_returns_json():
 
     await client.close()
 
+
 @pytest.mark.asyncio
 async def test_4xx_is_not_retried():
     client = FakeApiClient(
@@ -61,6 +62,7 @@ async def test_4xx_is_not_retried():
     client._client.request.assert_awaited_once()
 
     await client.close()
+
 
 @pytest.mark.asyncio
 async def test_timeout_is_retried():

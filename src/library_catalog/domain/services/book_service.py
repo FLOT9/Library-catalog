@@ -17,9 +17,9 @@ from ..mappers.book_mapper import BookMapper
 
 class BookService:
     def __init__(
-            self,
-            repository: BookRepository,
-            openlibrary_client: OpenLibraryClient,
+        self,
+        repository: BookRepository,
+        openlibrary_client: OpenLibraryClient,
     ) -> None:
         self.book_repo = repository
         self.ol_client = openlibrary_client
@@ -42,7 +42,7 @@ class BookService:
         extra = await self._enrich_book_data(book)
 
         data = book.model_dump()
-        data['extra'] = extra
+        data["extra"] = extra
 
         saved_book = await self.book_repo.create(**data)
 
@@ -80,6 +80,9 @@ class BookService:
         update_data = book_data.model_dump(exclude_unset=True)
         saved_book = await self.book_repo.update(book_id, **update_data)
 
+        if saved_book is None:
+            raise BookNotFoundException(book_id)
+
         return BookMapper.to_show_book(saved_book)
 
     async def delete_book(self, book_id: UUID) -> None:
@@ -89,16 +92,26 @@ class BookService:
             raise BookNotFoundException(book_id)
 
     async def search_books(
-            self,
-            title: str | None = None,
-            author: str | None = None,
-            genre: str | None = None,
-            year: int | None = None,
-            available: bool | None = None,
-            limit: int = 20,
-            offset: int = 0,
+        self,
+        title: str | None = None,
+        author: str | None = None,
+        genre: str | None = None,
+        year: int | None = None,
+        available: bool | None = None,
+        limit: int = 20,
+        offset: int = 0,
     ) -> tuple[list[ShowBook], int]:
-        books = await self.book_repo.find_by_filters(title=title, author=author, genre=genre, year=year, limit=limit, offset=offset, available=available)
-        total = await self.book_repo.count_by_filters(title=title, author=author, genre=genre, year=year, available=available)
+        books = await self.book_repo.find_by_filters(
+            title=title,
+            author=author,
+            genre=genre,
+            year=year,
+            limit=limit,
+            offset=offset,
+            available=available,
+        )
+        total = await self.book_repo.count_by_filters(
+            title=title, author=author, genre=genre, year=year, available=available
+        )
 
         return BookMapper.to_show_books(books), total

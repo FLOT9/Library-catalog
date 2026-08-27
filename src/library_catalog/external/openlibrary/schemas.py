@@ -10,6 +10,7 @@ class OpenLibrarySearchDoc(BaseModel):
     language: list[str] | None = Field(default=None)
     ratings_average: float | None = Field(default=None)
 
+
 class OpenLibrarySearchResponse(BaseModel):
     numFound: int
     docs: list[OpenLibrarySearchDoc]
