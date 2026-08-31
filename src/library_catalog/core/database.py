@@ -38,7 +38,12 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
             await session.rollback()
             raise
 
+
 async def check_db_connection() -> bool:
     async with engine.connect() as conn:
         await conn.execute(text("SELECT 1"))
         return True
+
+
+async def dispose_engine() -> None:
+    await engine.dispose()

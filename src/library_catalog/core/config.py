@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     database_url: PostgresDsn
     database_pool_size: int = 5
     api_v1_prefix: str = "/api/v1"
+    openlibrary_base_url: str = "https://openlibrary.org"
+    openlibrary_timeout: float = 10.0
+    cors_origins: list[str] = ["*"]
 
     model_config = SettingsConfigDict(
         env_file=".env",
